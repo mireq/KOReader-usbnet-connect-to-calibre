@@ -9,24 +9,24 @@ local socket = require("socket")
 local _ = require("gettext")
 
 
-
 local CalibreAutoconnect = WidgetContainer:new{
     name = "calibre_usb_autoconnect",
     is_doc_only = false,
-    charging = false,
-    calibre = nil
 }
 
-local initialized = false;
+local charging = false
+local initialized = false
+local calibre = nil
+local tryConnect = nil
 
 function CalibreAutoconnect:init()
     if not initialized then
-        self.calibre = self.loadCalibreModule()
-        if self.calibre ~= nil then
-            self.calibre.wireless:init()
+        calibre = self.loadCalibreModule()
+        if calibre ~= nil then
+            calibre.wireless:init()
         end
 
-        self.tryConnect = function()
+        tryConnect = function()
             self:checkConnectionAndTryConnect()
         end
 
@@ -76,39 +76,38 @@ function CalibreAutoconnect:loadCalibreModule()
 end
 
 function CalibreAutoconnect:onCharging()
-    if self.charging then
+    if charging then
         return
     end
-    self.charging = true
-    UIManager:scheduleIn(1, self.tryConnect)
+    charging = true
+    UIManager:scheduleIn(1, tryConnect)
 end
 
 function CalibreAutoconnect:onNotCharging()
-    if not self.charging then
+    if not charging then
         return
     end
-    UIManager:unschedule(self.tryConnect)
-    self.charging = false
-    if self.calibre ~= nil and self.calibre.wireless.calibre_socket ~= nil then
-        self.calibre.wireless:disconnect()
+    UIManager:unschedule(tryConnect)
+    charging = false
+    if calibre ~= nil and calibre.wireless.calibre_socket ~= nil then
+        calibre.wireless:disconnect()
     end
 end
 
 function CalibreAutoconnect:onExit()
-    if self.calibre ~= nil and self.calibre.wireless.calibre_socket ~= nil then
-        self.calibre.wireless:disconnect()
+    if calibre ~= nil and calibre.wireless.calibre_socket ~= nil then
+        calibre.wireless:disconnect()
     end
-    if self.tryConnect ~= nil then
-        UIManager:unschedule(self.tryConnect)
+    if tryConnect ~= nil then
+        UIManager:unschedule(tryConnect)
     end
-    print("exit")
 end
 
 function CalibreAutoconnect:checkConnectionAndTryConnect()
-    if self.calibre == nil then
+    if calibre == nil then
         return
     end
-    if self.calibre.wireless.calibre_socket ~= nil or not self.charging then
+    if calibre.wireless.calibre_socket ~= nil or not charging then
         return
     end
 
@@ -124,10 +123,10 @@ function CalibreAutoconnect:checkConnectionAndTryConnect()
         local client = tcp:connect(host, port)
         if client then
             tcp:close()
-            self.calibre.metadata:init(inbox_dir)
-            self.calibre.wireless:initCalibreMQ(host, port)
+            calibre.metadata:init(inbox_dir)
+            calibre.wireless:initCalibreMQ(host, port)
         else
-            UIManager:scheduleIn(1, self.tryConnect)
+            UIManager:scheduleIn(1, tryConnect)
         end
     end
 end
