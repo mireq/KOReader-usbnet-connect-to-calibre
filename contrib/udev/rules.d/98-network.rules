@@ -1,0 +1,2 @@
+SUBSYSTEM=="net", ACTION=="add", ENV{ID_VENDOR}=="Linux_3.0.35-lab126_with_fsl-usb2-udc", NAME="eth_kindle" RUN+="/etc/udev/scripts/kindle_start"
+SUBSYSTEM=="net", ACTION=="remove", ENV{ID_VENDOR}=="Linux_3.0.35-lab126_with_fsl-usb2-udc", NAME="eth_kindle" RUN+="/etc/udev/scripts/kindle_stop"

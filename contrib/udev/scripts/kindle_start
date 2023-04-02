@@ -1,0 +1,6 @@
+#!/bin/bash
+ip link set eth_kindle up
+ip addr add 192.168.15.243/24 dev eth_kindle
+su username -c "sshfs root@192.168.15.244:/mnt/us/ /mnt/kindle"
+# sync current time
+echo "date -s \"`date +'%Y-%m-%d %H:%M:%S'`\";hwclock -w -u"|sshpass -p "" ssh -o StrictHostKeyChecking=no root@192.168.15.244
