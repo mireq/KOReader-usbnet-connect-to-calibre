@@ -3,6 +3,12 @@ Automatically connect to calibre server using USBNet
 
 This plugin starts calibre connection using USBNet
 
+Prequisite
+----------
+
+USBNet between kindle and computer should be correctly configured. Example
+udev rules for automatic configuration are in conntrib folder.
+
 Install
 -------
 
