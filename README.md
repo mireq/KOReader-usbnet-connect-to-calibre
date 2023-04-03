@@ -9,6 +9,12 @@ Prequisite
 USBNet between kindle and computer should be correctly configured. Example
 udev rules for automatic configuration are in conntrib folder.
 
+Purpose
+-------
+
+This package is for paranoid users, who don't want to enable WiFi for file
+transfer. If you are using WiFi to transfer files, it's uselesss for you.
+
 Install
 -------
 
