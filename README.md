@@ -37,6 +37,11 @@ Then set indbox folder. Now you can connect USB cable.
 ![Calibre connect start](https://raw.github.com/wiki/mireq/KOReader-usbnet-connect-to-calibre/calibre_2.png?v=2023-04-04)
 ![Koreader settings](https://raw.github.com/wiki/mireq/KOReader-usbnet-connect-to-calibre/koreader.png?v=2023-04-04)
 
+Windows
+-------
+
+To install windows drivers follow [this link](https://www.mobileread.com/forums/showthread.php?p=3283986).
+
 Video
 -----
 
