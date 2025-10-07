@@ -5,8 +5,22 @@ local WidgetContainer = require("ui/widget/container/widgetcontainer")
 local Device = require("device")
 local logger = require("logger")
 local socket = require("socket")
+local NetworkMgr = require("ui/network/manager")
+
+local _orig_isConnected = NetworkMgr.isConnected
+local _orig_willRerun   = NetworkMgr.willRerunWhenConnected
+
+function NetworkMgr:isConnected()
+    return true
+end
+
+function NetworkMgr:willRerunWhenConnected(_)
+    return false
+end
 
 local _ = require("gettext")
+
+local charging = false
 
 
 local CalibreAutoconnect = WidgetContainer:new{
@@ -14,7 +28,6 @@ local CalibreAutoconnect = WidgetContainer:new{
     is_doc_only = false,
 }
 
-local charging = false
 local initialized = false
 local calibre = nil
 local tryConnect = nil
@@ -111,6 +124,8 @@ function CalibreAutoconnect:checkConnectionAndTryConnect()
         return
     end
 
+    local re = function(res) coroutine.resume(co, res) end
+
     -- Required to configure inbox_dir and calibre_wireless_url first
     local inbox_dir = G_reader_settings:readSetting("inbox_dir")
 
@@ -123,8 +138,7 @@ function CalibreAutoconnect:checkConnectionAndTryConnect()
         local client = tcp:connect(host, port)
         if client then
             tcp:close()
-            calibre.metadata:init(inbox_dir)
-            calibre.wireless:initCalibreMQ(host, port)
+            calibre.wireless:connect(host, port)
         else
             UIManager:scheduleIn(1, tryConnect)
         end
